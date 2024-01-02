@@ -1,0 +1,38 @@
+1. Setup project and app
+    A. Basic setup
+        npx create-react-app frontend
+        npm start
+
+    B. Install bootstrap & reactstrap, and axios
+        npm install bootstrap@4.6.0 reactstrap@8.9.0 --legacy-peer-deps
+
+        Include in index.js
+            import 'bootstrap/dist/css/bootstrap.css';
+
+2. Setup axios and connection with API
+    A. Install
+        npm install axios@0.21.1
+
+    B. Make API location default (allowing for use of relative paths)
+        Add to package.json (under "private": true,):
+            "proxy": "http://localhost:8000",
+
+
+
+
+
+
+
+Stuff I learned:
+- constructor(props), super(props)
+    - constructor(props) {}: this is where this.state is assigned, and event handler methods are bound to an instance
+        - do NOT call setState() within constructor()
+    - super(props): first line that must be written within constructor, otherwise this.props will be undefined in the constructor
+        - calls the constructor of the parent class (React.Component)
+- this.state
+    - do NOT put any parts of props into it
+    - used to contain data or info about component (seems like it contains all variables accessible throughout the component --except props, ofc)
+- order of methods called when Mounting
+    1. constructor()
+    2. render()
+    3. componentDidMount()

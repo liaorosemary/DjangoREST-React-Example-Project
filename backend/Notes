@@ -1,0 +1,84 @@
+Order
+1. Setup django project and app
+    pip3 install django
+    django-admin startproject backend
+
+    python3 manage.py startapp interleaver
+
+2. Setup CORS and REST
+    pip3 install djangorestframework django-cors-headers
+
+    settings.py:
+        A. add the following to Apps sections
+            'interleaver',
+            'corsheaders',
+            'rest_framework'
+
+        B. add to middlewear section
+            'corsheaders.middleware.CorsMiddleware',
+
+        C. add CORS_WHITELIST
+            CORS_ORIGIN_WHITELIST = [
+            'http://localhost:3000'
+            ]
+
+3. Models
+    A. models.py:
+        class Interleaver(models.Model):
+            title = models.CharField(max_length=120)
+            ...
+
+            def _str_(self):
+                return self.title
+    B. migrate + makemigrations
+
+4. Admin site setup
+    A. register models in admin.py
+        from .models import Interleaver
+
+        class InterleaverAdmin(admin.ModelAdmin):
+            list_display = ('title'...)
+
+        admin.site.register(Interleaver, InterleaverAdmin)
+
+    B. make superuser
+        python3 manage.py createsuperuser
+        python3 manage.py runserver
+
+        (head to admin page and will see models applied)
+
+5. Serializers
+    class InterleaverSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Interleaver
+            fields = ('id', 'title'...)
+
+6. View
+    from rest_framework import viewsets
+    
+    class InterleaverView(viewsets.ModelViewSet):
+        serializer_class = InterleaverSerializer
+        queryset = Interleaver.objects.all()
+
+7. Urls (project urls)
+    from django.urls import include
+    from rest_framework import routers
+
+    router = routers.DefaultRouter()
+    router.register(r'interleaver', views.InterleaverView, 'interleaver')
+
+    # Keep the the stuff from before and add 'api/'
+    urlpatterns = [
+        path('api/', include(router.urls))
+    ]
+
+
+
+
+
+
+
+
+Stuff I learned:
+- _str_ in models.py: https://stackoverflow.com/questions/45483417/what-is-doing-str-function-in-django#:~:text=This%20overrides%20the%20default%20name,which%20isn't%20very%20helpful.&text=def%20str(self)%3A%20is,predefined%20%2C%20however%20can%20be%20customised.
+    When django (admin through site or terminal) prints out the object, rather than having the model object (unidentifiable) be printed out, print out something that will help you recognize the instance (e.g: name, title, etc...)
